@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using KRDAspNetCore.Model;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters.Internal;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 
 namespace KRDAspNetCore.Controllers
 {
@@ -21,35 +24,59 @@ namespace KRDAspNetCore.Controllers
         {
             _context.Dispose();
         }
-
+        // GET /user/1
         [HttpGet]
         [Route("user/{id}")]
-        public IActionResult GetUser(int id)
+        public User GetUser(int id) // works
         {
-            var user = _context.Users.FirstOrDefault(u => u.ID == id);
-            if (user != null) return Content("User " + user.Name + " found!");
-            return Content("User " + id + " does not exist");
+            return _context.Users.FirstOrDefault(u => u.ID == id);
         }
-
+        // GET /user/
+        [HttpGet]
+        [Route("user")]
+        public IEnumerable<User> GetAllUsers() // works
+        {
+            return _context.Users.ToList();
+        }
+        // POST /user
         [HttpPost]
-        [Route("user/{name?}")]
-        public IActionResult PostUser(string name, string surname, string street, string login, string password, string role)
+        [Route("user")]
+        public User CreateUser(User _user) // works
         {
-            return new BadRequestResult();
+            _context.Users.Add(_user);
+            _context.SaveChanges();
+            return _user;
         }
-
+        // PUT /user
         [HttpPut]
-        [Route("user/{name?}")]
-        public IActionResult PutUser(string name)
+        [Route("user")]
+        public void UpdateUser(User _user) // works
         {
-            return Content("User " + name);
-        }
+            var userInDb = _context.Users.FirstOrDefault(u => u.ID == _user.ID);
 
+            if (userInDb == null) throw new HttpRequestException();
+
+            userInDb.Name = _user.Name;
+            userInDb.Surname = _user.Surname;
+            userInDb.Login = _user.Login;
+            userInDb.Password = _user.Password;
+            userInDb.Role = _user.Role;
+            userInDb.Password = _user.Password;
+            userInDb.Street = _user.Street;
+
+            _context.SaveChanges();
+        }
+        // DELETE /user/
         [HttpDelete]
-        [Route("user/{name?}")]
-        public IActionResult DeleteUser(string name)
+        [Route("user/{id}")]
+        public void DeleteUser(int id) // does not work
         {
-            return Content("User " + name);
+            var userInDb = _context.Users.SingleOrDefault(u => u.ID == id);
+
+            if (userInDb == null) throw new HttpRequestException();
+
+            _context.Users.Remove(userInDb);
+            _context.SaveChanges();
         }
     }
 }
