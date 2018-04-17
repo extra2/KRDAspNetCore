@@ -14,6 +14,11 @@ namespace KRDAspNetCore
     {
         public static void Main(string[] args)
         {
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json");
+            builder.Build();
+
             BuildWebHost(args).Run();
         }
 
