@@ -21,14 +21,11 @@ namespace KRDAspNetCore.Controllers
         {
             _context.Dispose();
         }
+
         [HttpGet]
         [Route("user/{id}")]
         public IActionResult GetUser(int id)
         {
-            _context.Users.Add(new User() { Login = "login", Name = "name" });
-            _context.SaveChanges();
-
-
             var user = _context.Users.FirstOrDefault(u => u.ID == id);
             if (user != null) return Content("User " + user.Name + " found!");
             return Content("User " + id + " does not exist");
