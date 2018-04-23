@@ -66,10 +66,10 @@ namespace KRDAspNetCore.Controllers
 
             _context.SaveChanges();
         }
-        // DELETE /user/
+        // DELETE /user/1
         [HttpDelete]
         [Route("user/{id}")]
-        public void DeleteUser(int id) // does not work
+        public void DeleteUser(int id) // works
         {
             var userInDb = _context.Users.SingleOrDefault(u => u.ID == id);
 
