@@ -8,6 +8,7 @@ namespace KRDAspNetCore.Model
         {
         }
         public DbSet<User> Users { get; set; }
+        public DbSet<Packages> Packages { get; set; }
 
     }
 }
