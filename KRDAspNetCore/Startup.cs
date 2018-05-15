@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using KRDAspNetCore.Model;
+﻿using KRDAspNetCore.Model;
+using KRDAspNetCore.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace KRDAspNetCore
 {
@@ -26,7 +21,11 @@ namespace KRDAspNetCore
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            
+
+            services.AddScoped<IPackagesRepository, PackagesRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
         }
 
